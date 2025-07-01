@@ -1,11 +1,20 @@
-FROM node
+# --- Stage 1: Build ---
+FROM node:18 AS builder
 
-WORKDIR /app/frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-COPY . /app/frontend/
+# --- Stage 2: Serve ---
+FROM node:18
 
-RUN npm install && npm run build
+WORKDIR /app
+COPY --from=builder /app /app
+
+RUN npm install -g serve
 
 EXPOSE 4000
+CMD ["serve", "-s", "dist", "-l", "4000"]
 
-CMD [ "npm", "run", "preview" ]
