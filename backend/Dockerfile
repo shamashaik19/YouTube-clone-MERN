@@ -1,22 +1,19 @@
+# Use official Node.js LTS image
 FROM node:18
 
+# Create app directory
 WORKDIR /app
 
-# Install dependencies
+# Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy remaining files
+# Copy the rest of the application code
 COPY . .
 
-# Use environment variables at runtime (don’t hardcode)
-ENV DB_user=${DB_user}
-ENV DB_password=${DB_password}
-ENV DB_name=${DB_name}
-ENV SECRET_KEY=${SECRET_KEY}
-ENV EMAIL=${EMAIL}
-ENV PASSWORD=${PASSWORD}
-
+# Expose the backend port
 EXPOSE 5000
+
+# Start the backend server
 CMD ["node", "server.js"]
 
